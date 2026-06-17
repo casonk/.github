@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 ### Added
-- `python-ci.yml` reusable workflow: matrix Python CI with pre-commit and pytest, inputs for `python-versions`, `install-extra`, `run-pytest`
+- `python-ci.yml` reusable workflow: matrix Python CI with pre-commit and pytest, inputs for `python-versions`, `install-extra`, `skip-install`, `run-pytest`
 - `secret-scan.yml` reusable workflow: Gitleaks on push/PR and scheduled full-history scan with baseline
 - `python-publish.yml` reusable workflow: two-job build + publish to PyPI via OIDC trusted publishing
 - `shell-ci.yml` reusable workflow: ShellCheck + optional test script
