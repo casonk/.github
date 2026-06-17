@@ -1,0 +1,26 @@
+name: Docs CI
+
+on:
+  workflow_call:
+    inputs:
+      ruby-version:
+        description: 'Ruby version for Jekyll builds'
+        type: string
+        default: '3.2'
+      build-command:
+        description: 'Command to build the site'
+        type: string
+        default: 'bundle exec jekyll build'
+
+jobs:
+  build:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ inputs.ruby-version }}
+          bundler-cache: true
+      - name: Build site
+        run: ${{ inputs.build-command }}
