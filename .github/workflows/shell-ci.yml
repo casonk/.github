@@ -1,0 +1,33 @@
+name: Shell CI
+
+on:
+  workflow_call:
+    inputs:
+      run-tests:
+        description: 'Run test script after ShellCheck'
+        type: boolean
+        default: true
+      test-script:
+        description: 'Path to the test runner script'
+        type: string
+        default: './tests/run_tests.sh'
+
+jobs:
+  shellcheck:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        run: |
+          FILES=$(find . -name "*.sh" -not -path "./.git/*")
+          if [ -n "$FILES" ]; then
+            echo "$FILES" | xargs shellcheck --severity=error
+          else
+            echo "No shell scripts found."
+          fi
+      - name: Run tests
+        if: ${{ inputs.run-tests }}
+        run: ${{ inputs.test-script }}

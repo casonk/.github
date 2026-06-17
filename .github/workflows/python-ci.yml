@@ -1,0 +1,42 @@
+name: Python CI
+
+on:
+  workflow_call:
+    inputs:
+      python-versions:
+        description: 'JSON array of Python versions to test against'
+        type: string
+        default: '["3.10", "3.12"]'
+      install-extra:
+        description: 'pyproject.toml extra to install via pip install -e ".[<extra>]"'
+        type: string
+        default: 'dev'
+      run-pytest:
+        description: 'Run pytest after install'
+        type: boolean
+        default: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJson(inputs.python-versions) }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[${{ inputs.install-extra }}]"
+      - name: pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
+      - name: pytest
+        if: ${{ inputs.run-pytest }}
+        run: pytest -q
