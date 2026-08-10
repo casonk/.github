@@ -44,4 +44,11 @@ jobs:
           pre-commit run --all-files
       - name: pytest
         if: ${{ inputs.run-pytest }}
-        run: pytest -q
+        run: |
+          # With skip-install the Install step never runs, so pytest is not on
+          # PATH and `pytest -q` exits 127. Repos that have tests but no
+          # installable package still need the runner itself.
+          if ! command -v pytest >/dev/null 2>&1; then
+            pip install pytest
+          fi
+          pytest -q
