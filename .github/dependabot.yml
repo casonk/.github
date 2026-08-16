@@ -7,6 +7,13 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "America/Detroit"
+    # One PR per action produced five parallel PRs that sat unmerged for two
+    # months. Grouping collapses every github-actions bump into a single weekly
+    # PR, which is the only review this repository's shared workflows need.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
     labels:
       - "dependencies"
       - "github-actions"
