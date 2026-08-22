@@ -1,0 +1,109 @@
+name: Install Check
+
+# Deliberately separate from python-ci.yml. That workflow answers "do the tests
+# pass", which it does by importing the source tree. This one answers a
+# different question: if a stranger follows the README on a machine that has
+# nothing, do they end up with something that runs?
+#
+# Those fail independently. pip writes a console-script launcher for
+# `foo = pkg.cli:main` without ever checking that `pkg.cli` exists, so a repo
+# can have a green test suite and a command that dies the first time anyone
+# types its name. That exact bug shipped in this portfolio.
+#
+# This is also the only place Windows and macOS get exercised.
+#
+# Usage from a calling repo:
+#
+#   jobs:
+#     install-check:
+#       uses: casonk/.github/.github/workflows/install-check.yml@main
+
+on:
+  workflow_call:
+    inputs:
+      python-versions:
+        description: 'JSON array of Python versions to test against'
+        type: string
+        default: '["3.11", "3.12"]'
+      operating-systems:
+        description: 'JSON array of runner labels to install on'
+        type: string
+        default: '["ubuntu-latest", "macos-latest", "windows-latest"]'
+      install-extra:
+        description: 'pyproject.toml extra to install, e.g. "dev". Empty installs bare.'
+        type: string
+        default: ''
+      run-pytest:
+        description: 'Run pytest after verifying the install'
+        type: boolean
+        default: false
+      shared-ref:
+        description: 'Ref of casonk/.github to take scripts/verify_install.py from'
+        type: string
+        default: 'main'
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.os }} / py${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJson(inputs.operating-systems) }}
+        python-version: ${{ fromJson(inputs.python-versions) }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # Fetched by checkout rather than curl so the verifier is pinned to a ref
+      # and works for private callers, where a raw.githubusercontent URL is not
+      # readable.
+      - name: Check out shared scripts
+        uses: actions/checkout@v7
+        with:
+          repository: casonk/.github
+          ref: ${{ inputs.shared-ref }}
+          path: .ci-shared
+          sparse-checkout: scripts
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # A build artifact committed by accident would let a broken install look
+      # healthy here exactly as it does on a developer's machine.
+      - name: Remove stale build artifacts
+        shell: python
+        run: |
+          import pathlib, shutil
+          for pattern in ("build", "dist", "*.egg-info", "src/*.egg-info", ".venv"):
+              for path in pathlib.Path(".").glob(pattern):
+                  shutil.rmtree(path, ignore_errors=True)
+                  print(f"removed {path}")
+
+      - name: Install
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [ -n "${{ inputs.install-extra }}" ]; then
+            python -m pip install -e ".[${{ inputs.install-extra }}]"
+          else
+            python -m pip install -e .
+          fi
+
+      - name: Verify the install actually runs
+        shell: bash
+        run: python .ci-shared/scripts/verify_install.py --repo .
+
+      - name: pytest
+        if: ${{ inputs.run-pytest }}
+        shell: bash
+        run: |
+          if ! command -v pytest >/dev/null 2>&1; then
+            pip install pytest
+          fi
+          pytest -q

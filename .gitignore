@@ -1,2 +1,6 @@
 CHATHISTORY.md
 REFS-LOCAL.md
+
+# Byte-cache from running scripts/ locally.
+__pycache__/
+*.pyc
