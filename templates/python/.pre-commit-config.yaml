@@ -1,0 +1,49 @@
+# Canonical pre-commit configuration for Python repos in this portfolio.
+#
+# Copy to the root of a Python repo as `.pre-commit-config.yaml`. The shared
+# python-ci workflow runs `pre-commit run --all-files` unconditionally, so a
+# repo calling it without this file fails with:
+#
+#     InvalidConfigError: .pre-commit-config.yaml is not a file
+#
+# Deliberately no `black` hook. Repos in this portfolio carried one alongside
+# ruff-format, marked "remove once ruff-format is confirmed stable
+# portfolio-wide". It is now omitted for two reasons:
+#
+#   1. ruff-format covers the same ground, and the two agree in practice --
+#      across the repos where both ran, black passed on every file after
+#      ruff-format had formatted it.
+#   2. black 26.x requires Python >=3.10. pre-commit builds each hook an
+#      environment from the running interpreter, so on a repo supporting 3.9
+#      the hook cannot install at all:
+#
+#          ERROR: Package 'black' requires a different Python:
+#          3.9.25 not in '>=3.10'
+#
+#      That is not hypothetical: auto-router-api has a 3.9 floor and its 3.9
+#      CI job failed on exactly this, while 3.10 through 3.12 passed.
+#
+# Keeping two formatters was already redundant; keeping one that silently
+# constrains the supported Python floor is worse.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks

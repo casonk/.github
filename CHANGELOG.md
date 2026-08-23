@@ -3,6 +3,16 @@
 ## [Unreleased]
 
 ### Added
+- `templates/python/.pre-commit-config.yaml`: canonical pre-commit config for
+  Python repos. `python-ci.yml` runs `pre-commit run --all-files`
+  unconditionally, so a calling repo without that file fails before reaching
+  its own code — a requirement that was previously undocumented. The template
+  omits the deprecated `black` hook: `ruff-format` covers the same ground, and
+  `black` 26.x requires Python `>=3.10`, so on a repo with a 3.9 floor the hook
+  cannot install at all. **Calling-repo impact:** none. Existing configs keep
+  working; repos with a `>=3.10` floor need no change.
+- README now documents `install-check.yml` in the workflow table with a caller
+  example, and the pre-commit requirement above.
 - `install-check.yml` reusable workflow: installs a repo from a clean runner on
   Linux, macOS **and Windows**, then asserts every shipped package imports and
   every `[project.scripts]` entry point actually runs. Complements
