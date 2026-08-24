@@ -1,0 +1,15 @@
+# Account-wide default issue-template config. Applies to any repository that
+# does not ship its own .github/ISSUE_TEMPLATE/config.yml.
+#
+# Blank issues stay enabled deliberately: forcing every report through a
+# template would block quick notes across every repository at once, and the
+# templates already carry the guidance that matters.
+blank_issues_enabled: true
+
+contact_links:
+  # The portfolio security policy is that sensitive disclosures never go in a
+  # public issue. Surfacing that at the point where someone is about to open
+  # one is worth more than restating it in a file they have not opened.
+  - name: Report a security vulnerability
+    url: https://github.com/casonk/.github/blob/main/SECURITY.md
+    about: Do not open a public issue. Report privately — see the security policy.

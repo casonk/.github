@@ -2,6 +2,44 @@
 
 GitHub account-level configuration for the casonk portfolio: default community health files and reusable CI/CD workflows shared across all repositories.
 
+## Default Community Health Files
+
+GitHub serves these to any repository in the account that does not ship its own
+copy. A repository that wants different content simply adds its own file, which
+takes precedence.
+
+| File | Serves as default for |
+|---|---|
+| `CODE_OF_CONDUCT.md` | repo without its own |
+| `CONTRIBUTING.md` | repo without its own |
+| `SECURITY.md` | repo without its own |
+| `.github/ISSUE_TEMPLATE/bug_report.md` | repo without its own |
+| `.github/ISSUE_TEMPLATE/feature_request.md` | repo without its own |
+| `.github/ISSUE_TEMPLATE/config.yml` | repo without its own |
+| `.github/PULL_REQUEST_TEMPLATE.md` | repo without its own |
+
+**These apply to private repositories too, even though this repository is
+public.** That is worth stating because it is easy to assume otherwise and skip
+the mechanism. Verified against a private repository in this account that ships
+neither file:
+
+```console
+$ gh api repos/casonk/<private-repo>/community/profile \
+    --jq '.files | {code_of_conduct, contributing}'
+{
+  "code_of_conduct": "https://github.com/casonk/.github/blob/main/CODE_OF_CONDUCT.md",
+  "contributing":    "https://github.com/casonk/.github/blob/main/CONTRIBUTING.md"
+}
+```
+
+Re-check with that command after changing anything here. Because defaults reach
+every repository that lacks its own copy, edits to these files are a
+portfolio-wide change with the same blast radius as a reusable-workflow merge —
+see the Dependabot and `@main` notes below.
+
+Note the one exception: **`LICENSE` cannot be defaulted.** GitHub requires a
+license file in each repository, so it stays on the Tier-1 per-repo list.
+
 ## Reusable Workflows
 
 Call these from any repository in the `casonk` account using `uses: casonk/.github/.github/workflows/<name>@main`.
