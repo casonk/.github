@@ -20,8 +20,8 @@
 #          ERROR: Package 'black' requires a different Python:
 #          3.9.25 not in '>=3.10'
 #
-#      That is not hypothetical: auto-router-api has a 3.9 floor and its 3.9
-#      CI job failed on exactly this, while 3.10 through 3.12 passed.
+#      That is not hypothetical: a portfolio repo with a 3.9 floor had its 3.9
+#      CI job fail on exactly this, while 3.10 through 3.12 passed.
 #
 # Keeping two formatters was already redundant; keeping one that silently
 # constrains the supported Python floor is worse.
