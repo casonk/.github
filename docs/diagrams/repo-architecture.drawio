@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-08-28T00:00:00+09:00" version="24.7.17" type="device" compressed="false">
+  <diagram id="dot-github-architecture" name="Repo Architecture">
+    <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1200" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="dot-github Repository Architecture" style="rounded=0;whiteSpace=wrap;html=0;fillColor=#1F2937;strokeColor=#111827;fontColor=#FFFFFF;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="maintainer" value="Maintainer&#10;review and merge" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FCE7F3;strokeColor=#DB2777;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="50" y="180" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="defaults" value="Community-health defaults&#10;root policy + issue / PR templates" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#E0F2FE;strokeColor=#0284C7;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="120" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="workflows" value="Reusable workflows&#10;CI · install · docs · shell · publish" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="320" y="300" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="scan" value="Gitleaks CLI&#10;full history + optional baseline" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="650" y="300" width="230" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="github" value="GitHub account&#10;inherited defaults + Actions" style="shape=cloud;whiteSpace=wrap;html=0;fillColor=#E2E8F0;strokeColor=#64748B;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="690" y="110" width="230" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="caller" value="Caller repository&#10;uses workflow at @main" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="970" y="290" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="maintainer" target="defaults"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="maintainer" target="workflows"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="inherited defaults" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=13;" edge="1" parent="1" source="defaults" target="github"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" value="@main contract" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=13;" edge="1" parent="1" source="workflows" target="caller"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="scan" target="workflows"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="caller" target="github"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -10,17 +10,6 @@ Mark items `[x]` when complete and move them to Done.
 
 ## Pending
 
-- [ ] [manual:2026-08-23] **Correct `REFS-PUBLIC.md:13`,** which still
-  documents `gitleaks-action@v2`. Nothing in the portfolio uses it, and it
-  cannot consume a baseline file at all — the reason every repo runs the CLI
-  with `--baseline-path` instead. Leaving it documented invites someone to
-  adopt the action and silently lose baseline suppression.
-
-- [ ] [manual:2026-08-23] **Close the remaining Tier-1 gaps:**
-  `docs/contributor-architecture-blueprint.md` and
-  `docs/diagrams/repo-architecture.{puml,drawio}`. The `.github/` templates are
-  covered by the first item above rather than separately.
-
 ## In Progress
 
 ## Done
@@ -28,3 +17,6 @@ Mark items `[x]` when complete and move them to Done.
 - [x] [manual:2026-08-27] Serve issue and pull-request templates as account-wide
   community-health defaults from this repository.
 - [x] [manual:2026-08-28] Add the `## Sudo Boundary` section to `AGENTS.md`.
+- [x] [manual:2026-08-28] Correct the public Gitleaks reference to the
+  baseline-aware CLI implementation and add the Tier-1 architecture blueprint
+  with editable PlantUML and draw.io diagrams.

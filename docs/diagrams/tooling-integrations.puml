@@ -17,7 +17,7 @@ cloud "actions/upload-artifact" as tool_actions_upload_artifact #FEF3C7
 cloud "apt-get" as tool_apt_get #FEF3C7
 cloud "build" as tool_build #FEF3C7
 cloud "curl" as tool_curl #FEF3C7
-cloud "gitleaks/gitleaks-action" as tool_gitleaks_gitleaks_action #FEF3C7
+cloud "gitleaks CLI" as tool_gitleaks_cli #FEF3C7
 cloud "pip" as tool_pip #FEF3C7
 cloud "pre-commit" as tool_pre_commit #FEF3C7
 cloud "pypa/gh-action-pypi-publish" as tool_pypa_gh_action_pypi_publish #FEF3C7
@@ -42,7 +42,7 @@ source_github_workflows_python_publish_yml --> tool_pypa_gh_action_pypi_publish
 source_github_workflows_secret_scan_yml --> tool_actions_checkout
 source_github_workflows_secret_scan_yml --> tool_actions_upload_artifact
 source_github_workflows_secret_scan_yml --> tool_curl
-source_github_workflows_secret_scan_yml --> tool_gitleaks_gitleaks_action
+source_github_workflows_secret_scan_yml --> tool_gitleaks_cli
 source_github_workflows_secret_scan_yml --> tool_tar
 source_github_workflows_shell_ci_yml --> tool_actions_checkout
 source_github_workflows_shell_ci_yml --> tool_apt_get

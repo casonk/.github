@@ -10,7 +10,6 @@ Public external references for `dot-github` (the `casonk/.github` repo).
 | `actions/setup-python` | `@v6` | Python environment setup |
 | `actions/upload-artifact` | `@v4` | Artifact storage (CI outputs) |
 | `actions/download-artifact` | `@v4` | Artifact retrieval (publish job) |
-| `gitleaks/gitleaks-action` | `@v2` | Secret detection on push/PR |
 | `pypa/gh-action-pypi-publish` | `@release/v1` | OIDC-based PyPI publishing |
 | `ruby/setup-ruby` | `@v1` | Ruby/Jekyll environment setup |
 
@@ -20,3 +19,9 @@ Public external references for `dot-github` (the `casonk/.github` repo).
 |---|---|---|
 | PyPI | https://pypi.org | Python package registry |
 | Gitleaks | https://github.com/gitleaks/gitleaks | Secret detection CLI and action |
+
+## Security Tooling
+
+| Tool | Version | Purpose |
+|---|---|---|
+| Gitleaks CLI | `8.30.1` | Full-history secret scan with optional baseline support |
