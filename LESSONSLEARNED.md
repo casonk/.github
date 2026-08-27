@@ -15,6 +15,9 @@ Unlike `CHATHISTORY.md`, this file should keep only reusable lessons that should
 
 ## Lessons
 
+- Keep the workflow reference inventory derived from the executable workflow
+  files. The baseline-aware secret scan downloads the Gitleaks CLI; documenting
+  the retired action would invite a regression that cannot consume baselines.
 - Reusable workflow changes on `main` take effect immediately for every calling repo — treat merges to `main` as a portfolio-wide deploy, not just a local change.
 - Calling repos reference workflows via `@main` (not a semver tag), so Dependabot on individual calling repos will not generate `github-actions` PRs — no conflict with the central Dependabot here.
 - When a new action version (e.g., `actions/checkout@v7`) is released, the single Dependabot PR here is the only update needed; all callers inherit it automatically on next run.
