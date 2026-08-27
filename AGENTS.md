@@ -50,6 +50,17 @@ This repo has no Python source. Before pushing:
 pre-commit run --all-files
 ```
 
+## Sudo Boundary
+
+Agents cannot run `sudo` in this environment. Nothing in this repo needs
+elevation to edit — it is reusable workflows, default health files, and config
+— so finish and validate the change without `sudo`, and if a downstream task
+ever does require an elevated command, hand the exact command to the user to
+run rather than retrying `sudo`.
+
+Do not claim a sudo-backed live change was applied until the user shares the
+result.
+
 ## Session Continuity
 
 - Read `LESSONSLEARNED.md` and `CHATHISTORY.md` before resuming work here.
