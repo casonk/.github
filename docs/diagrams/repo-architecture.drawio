@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net" modified="2026-08-28T00:00:00+09:00" version="24.7.17" type="device" compressed="false">
   <diagram id="dot-github-architecture" name="Repo Architecture">
     <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1200" pageHeight="700" math="0" shadow="0">
@@ -26,12 +26,61 @@
         <mxCell id="caller" value="Caller repository&#10;uses workflow at @main" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="970" y="290" width="180" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="maintainer" target="defaults"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="maintainer" target="workflows"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" value="inherited defaults" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=13;" edge="1" parent="1" source="defaults" target="github"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e4" value="@main contract" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=13;" edge="1" parent="1" source="workflows" target="caller"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="scan" target="workflows"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;" edge="1" parent="1" source="caller" target="github"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;jumpStyle=arc;jumpSize=10;" edge="1" parent="1" source="maintainer" target="defaults">
+          <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
+            <Array as="points">
+              <mxPoint x="254" y="220" />
+              <mxPoint x="296" y="220" />
+              <mxPoint x="296" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;jumpStyle=arc;jumpSize=10;" edge="1" parent="1" source="maintainer" target="workflows">
+          <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
+            <Array as="points">
+              <mxPoint x="254" y="220" />
+              <mxPoint x="254" y="350" />
+              <mxPoint x="296" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="inherited defaults" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=13;jumpStyle=arc;jumpSize=10;" edge="1" parent="1" source="defaults" target="github">
+          <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
+            <Array as="points">
+              <mxPoint x="604" y="170" />
+              <mxPoint x="666" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="@main contract" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;fontSize=13;jumpStyle=arc;jumpSize=10;" edge="1" parent="1" source="workflows" target="caller">
+          <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
+            <Array as="points">
+              <mxPoint x="604" y="350" />
+              <mxPoint x="604" y="268" />
+              <mxPoint x="946" y="268" />
+              <mxPoint x="946" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;jumpStyle=arc;jumpSize=10;" edge="1" parent="1" source="scan" target="workflows">
+          <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
+            <Array as="points">
+              <mxPoint x="626" y="350" />
+              <mxPoint x="626" y="315" />
+              <mxPoint x="604" y="315" />
+              <mxPoint x="604" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=0;endArrow=block;endFill=1;jumpStyle=arc;jumpSize=10;" edge="1" parent="1" source="caller" target="github">
+          <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
+            <Array as="points">
+              <mxPoint x="1060" y="266" />
+              <mxPoint x="805" y="266" />
+              <mxPoint x="805" y="254" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
