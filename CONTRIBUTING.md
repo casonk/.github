@@ -30,3 +30,13 @@ Dependabot is enabled on this repo only (for `github-actions` ecosystem). After 
 | Reusable workflow and an individual repo's inline CI diverge | Migrate the individual repo to the reusable workflow; delete the inline action pins |
 
 **Never add** a `github-actions` Dependabot entry to a calling repo that has already migrated. The canonical pin lives here.
+
+## AI Contribution Disclosure
+
+Parts of this repository's code, documentation and commit history were drafted
+with AI coding assistants, including Claude Code, OpenAI Codex, GitHub Copilot
+and Continue. The maintainer directs that work, reviews and tests each change
+before it merges, and is responsible for the result.
+
+This section is the repository-wide disclosure. Individual commits, pull
+requests and files do not carry per-tool attribution lines.
