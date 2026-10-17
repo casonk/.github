@@ -49,7 +49,8 @@ Call these from any repository in the `casonk` account using `uses: casonk/.gith
 | `python-ci.yml` | Matrix Python CI: install, pre-commit, pytest | `python-versions`, `install-extra`, `run-pytest` |
 | `install-check.yml` | Installs the package on Linux/macOS/Windows, then asserts every shipped module imports and every console script runs | `python-versions`, `operating-systems`, `install-extra` |
 | `secret-scan.yml` | Gitleaks secret scanning (push/PR + scheduled full history) | `gitleaks-version` |
-| `python-publish.yml` | Build and publish to PyPI on release | `package-name` |
+| `python-build.yml` | Build a wheel and source distribution for a caller's publish job | none |
+| `python-publish.yml` | Legacy publish workflow; PyPI rejects its OIDC token because the publish job is reusable | `package-name` |
 | `shell-ci.yml` | ShellCheck + optional test script | `run-tests`, `test-script` |
 | `docs-ci.yml` | Jekyll / Ruby site build | `ruby-version`, `build-command` |
 
@@ -152,19 +153,36 @@ on:
     types: [published]
 
 jobs:
+  build:
+    uses: casonk/.github/.github/workflows/python-build.yml@main
   publish:
-    uses: casonk/.github/.github/workflows/python-publish.yml@main
-    with:
-      package-name: my-package
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/my-package
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: python-dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
 ```
 
 ## Version Pinning Strategy
 
-All action version pins (`actions/checkout`, `actions/setup-python`, etc.) live **only inside the reusable workflows in this repo**. Dependabot is configured here to keep those pins current weekly. Calling repos do not pin action versions directly — they delegate entirely to these workflows via `@main`.
+Build and CI action version pins live in this repo's reusable workflows. PyPI's
+trusted publishing requires the OIDC upload job in the caller workflow, so the
+caller must reference `actions/download-artifact` and
+`pypa/gh-action-pypi-publish` directly. This is the sole exception to central
+action pinning. Review these two caller references when updating the build
+workflow; Dependabot in this repository does not update them.
 
 This means:
 - A single Dependabot PR here bumps the action version for every repo in the portfolio simultaneously.
-- Calling repos never need per-repo Dependabot PRs for `github-actions` ecosystem updates.
+- Calling repos do not need per-repo Dependabot for their reusable CI and build jobs.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the Dependabot conflict-handling rules.
 

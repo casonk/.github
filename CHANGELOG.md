@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+- Added `python-build.yml` so callers can run the PyPI upload in their own
+  workflow. PyPI rejects OIDC tokens issued to a reusable publish job.
+  **Calling-repo impact:** migrate `python-publish.yml` callers to a reusable
+  build job and a local publish job; the latter references two actions directly.
+
 ### Added
 - `templates/python/.pre-commit-config.yaml`: canonical pre-commit config for
   Python repos. `python-ci.yml` runs `pre-commit run --all-files`
