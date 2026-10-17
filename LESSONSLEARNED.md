@@ -15,6 +15,10 @@ Unlike `CHATHISTORY.md`, this file should keep only reusable lessons that should
 
 ## Lessons
 
+- PyPI trusted publishing rejects OIDC tokens from reusable workflow publish
+  jobs. Keep the build reusable, then download its artifact and invoke
+  `pypa/gh-action-pypi-publish` in the caller's top-level job. That requires
+  local pins for the download and publish actions; review them across callers.
 - Keep the workflow reference inventory derived from the executable workflow
   files. The baseline-aware secret scan downloads the Gitleaks CLI; documenting
   the retired action would invite a regression that cannot consume baselines.

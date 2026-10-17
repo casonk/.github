@@ -37,10 +37,12 @@ Standard implementations for common portfolio capabilities:
 | Situation | Action |
 |---|---|
 | Dependabot PR here bumps an action version | Review and merge — propagates to all callers |
-| Dependabot PR on an individual repo for `github-actions` | Close with label `superseded` — the repo has an unmigrated inline workflow |
+| Dependabot PR on an individual repo for `github-actions` | Check whether it updates the required local PyPI publish job; close unrelated inline-workflow bumps with label `superseded` |
 | Reusable workflow and an individual repo's CI diverge | Migrate the individual repo; remove its inline action pins |
 
-Never add a `github-actions` Dependabot entry to a calling repo that has migrated.
+The PyPI publish job is an exception: PyPI rejects reusable workflow OIDC
+tokens, so its download and publish actions stay in the calling repository.
+Review those references across callers when their versions change.
 
 ## Local CI Verification — dot-github
 
