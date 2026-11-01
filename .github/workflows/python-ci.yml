@@ -19,10 +19,17 @@ on:
         description: 'Run pytest after install'
         type: boolean
         default: true
+      runs-on:
+        description: >-
+          Runner label. ubuntu-latest moves to a new Ubuntu release over time, and
+          an older Python (3.9 is gone from ubuntu-26.04) may only be installable
+          on an earlier one such as ubuntu-24.04.
+        type: string
+        default: 'ubuntu-latest'
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     strategy:
       fail-fast: false
       matrix:
