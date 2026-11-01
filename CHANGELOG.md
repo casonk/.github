@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+- `python-ci.yml` takes an optional `runs-on` input (default `ubuntu-latest`, so
+  existing callers are unchanged). `ubuntu-latest` is now Ubuntu 26.04, which has
+  no Python 3.9; a caller that still tests 3.9 can pass `ubuntu-24.04`.
+
 ### Fixed
 - Added `python-build.yml` so callers can run the PyPI upload in their own
   workflow. PyPI rejects OIDC tokens issued to a reusable publish job.

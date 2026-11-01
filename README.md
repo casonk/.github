@@ -46,7 +46,7 @@ Call these from any repository in the `casonk` account using `uses: casonk/.gith
 
 | Workflow | Purpose | Key Inputs |
 |---|---|---|
-| `python-ci.yml` | Matrix Python CI: install, pre-commit, pytest | `python-versions`, `install-extra`, `run-pytest` |
+| `python-ci.yml` | Matrix Python CI: install, pre-commit, pytest | `python-versions`, `install-extra`, `run-pytest`, `runs-on` |
 | `install-check.yml` | Installs the package on Linux/macOS/Windows, then asserts every shipped module imports and every console script runs | `python-versions`, `operating-systems`, `install-extra` |
 | `secret-scan.yml` | Gitleaks secret scanning (push/PR + scheduled full history) | `gitleaks-version` |
 | `python-build.yml` | Build a wheel and source distribution for a caller's publish job | none |
