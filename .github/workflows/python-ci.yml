@@ -61,14 +61,24 @@ jobs:
     env:
       # `secrets` cannot be tested in a step `if`, so expose only whether it is set.
       HAS_CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN != '' }}
-      # Coverage is measured on the last matrix entry only; the others run as before.
-      MEASURE_COVERAGE: ${{ inputs.coverage && strategy.job-index == strategy.job-total - 1 }}
     strategy:
       fail-fast: false
       matrix:
         python-version: ${{ fromJson(inputs.python-versions) }}
     steps:
       - uses: actions/checkout@v7
+      # Coverage is measured on the last Python in python-versions only; the other
+      # legs run as before. Expressions cannot do arithmetic, so pick the leg here.
+      - name: Pick the coverage leg
+        if: ${{ inputs.coverage }}
+        env:
+          VERSIONS: ${{ inputs.python-versions }}
+          CURRENT: ${{ matrix.python-version }}
+        run: |
+          last=$(python3 -c 'import json, os; print(json.loads(os.environ["VERSIONS"])[-1])')
+          if [ "$CURRENT" = "$last" ]; then
+            echo "MEASURE_COVERAGE=true" >> "$GITHUB_ENV"
+          fi
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
