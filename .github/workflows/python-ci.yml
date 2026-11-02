@@ -19,6 +19,29 @@ on:
         description: 'Run pytest after install'
         type: boolean
         default: true
+      coverage:
+        description: >-
+          Measure test coverage on the last Python version in the matrix and upload it
+          to Codecov. Off by default. Without a CODECOV_TOKEN secret (or coverage-use-oidc)
+          the coverage is still measured and the upload is skipped with a notice.
+        type: boolean
+        default: false
+      coverage-source:
+        description: >-
+          Comma-separated packages or directories to measure (each becomes --cov=NAME).
+          Empty uses the repository's own coverage configuration.
+        type: string
+        default: ''
+      coverage-use-oidc:
+        description: >-
+          Authenticate the upload with GitHub OIDC instead of a token. The calling job
+          needs `permissions: id-token: write` (and `contents: read`).
+        type: boolean
+        default: false
+      coverage-fail-on-error:
+        description: 'Fail the job if the Codecov upload fails (default: warn only)'
+        type: boolean
+        default: false
       runs-on:
         description: >-
           Runner label. ubuntu-latest moves to a new Ubuntu release over time, and
@@ -27,9 +50,19 @@ on:
         type: string
         default: 'ubuntu-latest'
 
+    secrets:
+      CODECOV_TOKEN:
+        description: 'Repository upload token from codecov.io, for the coverage input'
+        required: false
+
 jobs:
   test:
     runs-on: ${{ inputs.runs-on }}
+    env:
+      # `secrets` cannot be tested in a step `if`, so expose only whether it is set.
+      HAS_CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN != '' }}
+      # Coverage is measured on the last matrix entry only; the others run as before.
+      MEASURE_COVERAGE: ${{ inputs.coverage && strategy.job-index == strategy.job-total - 1 }}
     strategy:
       fail-fast: false
       matrix:
@@ -50,7 +83,7 @@ jobs:
           pip install pre-commit
           pre-commit run --all-files
       - name: pytest
-        if: ${{ inputs.run-pytest }}
+        if: ${{ inputs.run-pytest && env.MEASURE_COVERAGE != 'true' }}
         run: |
           # With skip-install the Install step never runs, so pytest is not on
           # PATH and `pytest -q` exits 127. Repos that have tests but no
@@ -59,3 +92,36 @@ jobs:
             pip install pytest
           fi
           pytest -q
+
+      - name: pytest with coverage
+        if: ${{ inputs.run-pytest && env.MEASURE_COVERAGE == 'true' }}
+        env:
+          COVERAGE_SOURCE: ${{ inputs.coverage-source }}
+        run: |
+          if ! command -v pytest >/dev/null 2>&1; then
+            pip install pytest
+          fi
+          pip install pytest-cov
+          args=()
+          if [ -n "$COVERAGE_SOURCE" ]; then
+            IFS=',' read -ra sources <<< "$COVERAGE_SOURCE"
+            for source in "${sources[@]}"; do args+=("--cov=${source// /}"); done
+          else
+            args+=(--cov)
+          fi
+          pytest -q "${args[@]}" --cov-report=term-missing --cov-report=xml:coverage.xml
+
+      - name: Upload coverage to Codecov
+        if: ${{ env.MEASURE_COVERAGE == 'true' && (inputs.coverage-use-oidc || env.HAS_CODECOV_TOKEN == 'true') }}
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: ${{ inputs.coverage-use-oidc }}
+          files: coverage.xml
+          flags: python-${{ matrix.python-version }}
+          fail_ci_if_error: ${{ inputs.coverage-fail-on-error }}
+
+      - name: Note the skipped coverage upload
+        if: ${{ env.MEASURE_COVERAGE == 'true' && !inputs.coverage-use-oidc && env.HAS_CODECOV_TOKEN != 'true' }}
+        run: |
+          echo "::notice title=Codecov::Coverage was measured but not uploaded, because there is no CODECOV_TOKEN secret and coverage-use-oidc is false."

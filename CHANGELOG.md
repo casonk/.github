@@ -3,6 +3,14 @@
 ## [Unreleased]
 
 ### Added
+- `python-ci.yml` can measure coverage and upload it to Codecov. Opt in with
+  `coverage: true`. Coverage is measured on the last Python in the matrix only and
+  uploaded with the `CODECOV_TOKEN` secret (the caller passes
+  `secrets: CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}`) or, with
+  `coverage-use-oidc: true`, GitHub OIDC (the calling job then needs
+  `permissions: id-token: write`). With neither, coverage is measured and the upload
+  is skipped with a notice. Inputs: `coverage`, `coverage-source`, `coverage-use-oidc`,
+  `coverage-fail-on-error`. Off by default, so existing callers are unchanged.
 - `python-ci.yml` takes an optional `runs-on` input (default `ubuntu-latest`, so
   existing callers are unchanged). `ubuntu-latest` is now Ubuntu 26.04, which has
   no Python 3.9; a caller that still tests 3.9 can pass `ubuntu-24.04`.
