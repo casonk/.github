@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed
+- `CODE_OF_CONDUCT.md` is now the Contributor Covenant 3.0 (CC BY-SA 4.0), changed only in the reporting route and the
+  note introducing the enforcement ladder. Repositories without their own file inherit it; a repository's own file is
+  kept only for project-specific rules, appended under the Covenant text.
+
 ### Added
 - `python-ci.yml` can measure coverage and upload it to Codecov. Opt in with
   `coverage: true`. Coverage is measured on the last Python in the matrix only and
