@@ -11,15 +11,21 @@ on:
         description: 'Path to the test runner script'
         type: string
         default: './tests/run_tests.sh'
+      runs-on:
+        description: >-
+          Runner label. A private repository can point this at its self-hosted
+          scale set; never use a self-hosted label for a public repository.
+        type: string
+        default: 'ubuntu-latest'
 
 jobs:
   shellcheck:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: actions/checkout@v7
       - name: Install ShellCheck
-        run: sudo apt-get install -y shellcheck
+        run: command -v shellcheck >/dev/null || sudo apt-get install -y shellcheck
       - name: Run ShellCheck
         run: |
           FILES=$(find . -name "*.sh" -not -path "./.git/*")
