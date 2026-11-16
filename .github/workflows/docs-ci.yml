@@ -11,11 +11,17 @@ on:
         description: 'Command to build the site'
         type: string
         default: 'bundle exec jekyll build'
+      runs-on:
+        description: >-
+          Runner label. A private repository can point this at its self-hosted
+          scale set; never use a self-hosted label for a public repository.
+        type: string
+        default: 'ubuntu-latest'
 
 jobs:
   build:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1

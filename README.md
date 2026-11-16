@@ -52,11 +52,11 @@ Call these from any repository in the `casonk` account using `uses: casonk/.gith
 |---|---|---|
 | `python-ci.yml` | Matrix Python CI: install, pre-commit, pytest; optional Codecov upload | `python-versions`, `install-extra`, `run-pytest`, `runs-on`, `coverage`, `coverage-source`, `coverage-use-oidc`, `coverage-fail-on-error`; secret `CODECOV_TOKEN` |
 | `install-check.yml` | Installs the package on Linux/macOS/Windows, then asserts every shipped module imports and every console script runs | `python-versions`, `operating-systems`, `install-extra` |
-| `secret-scan.yml` | Gitleaks secret scanning (push/PR + scheduled full history) | `gitleaks-version` |
-| `python-build.yml` | Build a wheel and source distribution for a caller's publish job | none |
+| `secret-scan.yml` | Gitleaks secret scanning (push/PR + scheduled full history) | `gitleaks-version`, `runs-on` |
+| `python-build.yml` | Build a wheel and source distribution for a caller's publish job | `runs-on` |
 | `python-publish.yml` | Legacy publish workflow; PyPI rejects its OIDC token because the publish job is reusable | `package-name` |
-| `shell-ci.yml` | ShellCheck + optional test script | `run-tests`, `test-script` |
-| `docs-ci.yml` | Jekyll / Ruby site build | `ruby-version`, `build-command` |
+| `shell-ci.yml` | ShellCheck + optional test script | `run-tests`, `test-script`, `runs-on` |
+| `docs-ci.yml` | Jekyll / Ruby site build | `ruby-version`, `build-command`, `runs-on` |
 
 ### Example: Python CI caller
 
@@ -174,6 +174,25 @@ jobs:
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
 ```
+
+## Choosing a runner
+
+Every reusable workflow except the legacy `python-publish.yml` takes a `runs-on` input that defaults to
+`ubuntu-latest`. A **private** repository can send its jobs to a self-hosted scale set without editing the
+workflow, by reading the label from a repository variable and falling back to the hosted runner when it is unset:
+
+```yaml
+jobs:
+  ci:
+    uses: casonk/.github/.github/workflows/python-ci.yml@main
+    with:
+      runs-on: ${{ vars.CI_RUNS_ON || 'ubuntu-latest' }}
+```
+
+Set `CI_RUNS_ON` to the scale-set name to switch, delete it to switch back. Never set it on a public repository:
+self-hosted runners must not run code from forks or untrusted pull requests. A self-hosted runner has no `sudo`,
+so a job must not depend on installing system packages (`shell-ci.yml` skips ShellCheck's install when it is
+already present).
 
 ## Version Pinning Strategy
 
