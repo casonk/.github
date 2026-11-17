@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Changed
+- `install-check.yml` reads the caller's `CI_RUNS_ON` variable: while it is set, push and pull-request runs install on that
+  self-hosted Linux runner only, and the full `operating-systems` matrix runs on `workflow_dispatch` and `schedule`.
+  Callers need no change; repositories without the variable behave as before.
 - `CODE_OF_CONDUCT.md` is now the Contributor Covenant 3.0 (CC BY-SA 4.0), changed only in the reporting route and the
   note introducing the enforcement ladder. Repositories without their own file inherit it; a repository's own file is
   kept only for project-specific rules, appended under the Covenant text.
