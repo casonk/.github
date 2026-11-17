@@ -197,7 +197,9 @@ already present).
 `install-check.yml` reads `CI_RUNS_ON` itself, so its callers need no change. While the variable is set, push and
 pull-request runs install on that one self-hosted Linux runner; the full `operating-systems` matrix (including the
 GitHub-hosted macOS and Windows legs, which cost Actions minutes) runs only on `workflow_dispatch` and `schedule`.
-Delete the variable and every run uses the full matrix again.
+Delete the variable and every run uses the full matrix again. A repository that also supports Windows sets
+`CI_RUNS_ON_WINDOWS` to the name of its Windows runner scale set, and push and pull-request runs then add that one
+Windows leg as well.
 
 ## Version Pinning Strategy
 
