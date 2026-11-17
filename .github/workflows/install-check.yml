@@ -17,8 +17,10 @@ name: Install Check
 # push and pull-request runs this workflow then installs on that runner only.
 # GitHub-hosted macOS and Windows runners still cost Actions minutes, so the full
 # `operating-systems` matrix runs on workflow_dispatch and schedule events only.
-# Deleting CI_RUNS_ON restores the full matrix on every run. Public repositories
-# never set the variable.
+# A repository that also supports Windows sets CI_RUNS_ON_WINDOWS to the name of its
+# Windows runner scale set, and push and pull-request runs then add that one Windows leg
+# (a disposable VM per job). Deleting CI_RUNS_ON restores the full matrix on every run.
+# Public repositories never set either variable.
 #
 # Usage from a calling repo:
 #
@@ -61,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJson(vars.CI_RUNS_ON != '' && github.event_name != 'workflow_dispatch' && github.event_name != 'schedule' && format('["{0}"]', vars.CI_RUNS_ON) || inputs.operating-systems) }}
+        os: ${{ fromJson(vars.CI_RUNS_ON != '' && github.event_name != 'workflow_dispatch' && github.event_name != 'schedule' && (vars.CI_RUNS_ON_WINDOWS != '' && format('["{0}","{1}"]', vars.CI_RUNS_ON, vars.CI_RUNS_ON_WINDOWS) || format('["{0}"]', vars.CI_RUNS_ON)) || inputs.operating-systems) }}
         python-version: ${{ fromJson(inputs.python-versions) }}
 
     steps:

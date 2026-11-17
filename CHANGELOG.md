@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Changed
+- `install-check.yml` also reads `CI_RUNS_ON_WINDOWS`: while it and `CI_RUNS_ON` are set, push and pull-request runs add that Windows
+  runner as a second leg beside the self-hosted Linux one. Repositories without the variable behave as before.
 - `install-check.yml` reads the caller's `CI_RUNS_ON` variable: while it is set, push and pull-request runs install on that
   self-hosted Linux runner only, and the full `operating-systems` matrix runs on `workflow_dispatch` and `schedule`.
   Callers need no change; repositories without the variable behave as before.
