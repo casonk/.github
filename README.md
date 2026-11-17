@@ -194,6 +194,11 @@ self-hosted runners must not run code from forks or untrusted pull requests. A s
 so a job must not depend on installing system packages (`shell-ci.yml` skips ShellCheck's install when it is
 already present).
 
+`install-check.yml` reads `CI_RUNS_ON` itself, so its callers need no change. While the variable is set, push and
+pull-request runs install on that one self-hosted Linux runner; the full `operating-systems` matrix (including the
+GitHub-hosted macOS and Windows legs, which cost Actions minutes) runs only on `workflow_dispatch` and `schedule`.
+Delete the variable and every run uses the full matrix again.
+
 ## Version Pinning Strategy
 
 Build and CI action version pins live in this repo's reusable workflows. PyPI's
