@@ -32,9 +32,16 @@ on:
   workflow_call:
     inputs:
       python-versions:
-        description: 'JSON array of Python versions to test against'
+        description: >-
+          JSON array of Python versions to test against, or `auto-edges` for the declared
+          requires-python floor plus the newest supported CPython, or `auto` for the newest
+          `python-count` supported minors.
         type: string
         default: '["3.11", "3.12"]'
+      python-count:
+        description: 'How many versions `auto` resolves to'
+        type: string
+        default: '3'
       operating-systems:
         description: 'JSON array of runner labels to install on'
         type: string
@@ -56,7 +63,29 @@ permissions:
   contents: read
 
 jobs:
+  python-versions:
+    # Turns the python-versions input into a concrete JSON array. A JSON array passes through; `auto`
+    # (newest N supported CPython minors) and `auto-edges` (declared floor + newest) are resolved
+    # from endoflife.date and the caller's requires-python, so no repo hard-codes a version list.
+    runs-on: ${{ vars.CI_RUNS_ON != '' && vars.CI_RUNS_ON || 'ubuntu-latest' }}
+    outputs:
+      versions: ${{ steps.resolve.outputs.versions }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: casonk/.github
+          ref: ${{ inputs.shared-ref }}
+          path: .ci-shared
+          sparse-checkout: scripts
+      - id: resolve
+        env:
+          SPEC: ${{ inputs.python-versions }}
+          COUNT: ${{ inputs.python-count }}
+        run: python3 .ci-shared/scripts/resolve_python_versions.py --spec "$SPEC" --count "$COUNT" --github-output "$GITHUB_OUTPUT"
+
   install:
+    needs: python-versions
     name: ${{ matrix.os }} / py${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -64,7 +93,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJson(vars.CI_RUNS_ON != '' && github.event_name != 'workflow_dispatch' && github.event_name != 'schedule' && (vars.CI_RUNS_ON_WINDOWS != '' && format('["{0}","{1}"]', vars.CI_RUNS_ON, vars.CI_RUNS_ON_WINDOWS) || format('["{0}"]', vars.CI_RUNS_ON)) || inputs.operating-systems) }}
-        python-version: ${{ fromJson(inputs.python-versions) }}
+        python-version: ${{ fromJson(needs.python-versions.outputs.versions) }}
 
     steps:
       - uses: actions/checkout@v7

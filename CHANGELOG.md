@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Added
+- `python-ci.yml` and `install-check.yml` accept `python-versions: auto` (the newest `python-count`, default 3, supported CPython
+  minors) and `auto-edges` (the declared `requires-python` floor plus the newest supported minor). A first job resolves them from
+  endoflife.date and the caller's `requires-python` with `scripts/resolve_python_versions.py`, so a repository no longer
+  hard-codes a Python list and stays on current releases as new ones ship and old ones reach end of life. An explicit JSON array
+  still passes straight through, and the defaults are unchanged.
+
 ### Changed
 - `install-check.yml` also reads `CI_RUNS_ON_WINDOWS`: while it and `CI_RUNS_ON` are set, push and pull-request runs add that Windows
   runner as a second leg beside the self-hosted Linux one. Repositories without the variable behave as before.
