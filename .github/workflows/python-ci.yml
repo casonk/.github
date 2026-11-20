@@ -4,9 +4,21 @@ on:
   workflow_call:
     inputs:
       python-versions:
-        description: 'JSON array of Python versions to test against'
+        description: >-
+          JSON array of Python versions to test against, or `auto` for the newest `python-count`
+          supported CPython minors (within the caller's requires-python), or `auto-edges` for the
+          declared floor plus the newest. `auto` keeps CI on the current Python releases without
+          editing any workflow.
         type: string
         default: '["3.10", "3.12"]'
+      python-count:
+        description: 'How many versions `auto` resolves to'
+        type: string
+        default: '3'
+      shared-ref:
+        description: 'Ref of casonk/.github to take scripts/resolve_python_versions.py from'
+        type: string
+        default: 'main'
       install-extra:
         description: 'pyproject.toml extra to install via pip install -e ".[<extra>]"'
         type: string
@@ -56,7 +68,29 @@ on:
         required: false
 
 jobs:
+  python-versions:
+    # Turns the python-versions input into a concrete JSON array. A JSON array passes through; `auto`
+    # (newest N supported CPython minors) and `auto-edges` (declared floor + newest) are resolved
+    # from endoflife.date and the caller's requires-python, so no repo hard-codes a version list.
+    runs-on: ${{ inputs.runs-on }}
+    outputs:
+      versions: ${{ steps.resolve.outputs.versions }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: casonk/.github
+          ref: ${{ inputs.shared-ref }}
+          path: .ci-shared
+          sparse-checkout: scripts
+      - id: resolve
+        env:
+          SPEC: ${{ inputs.python-versions }}
+          COUNT: ${{ inputs.python-count }}
+        run: python3 .ci-shared/scripts/resolve_python_versions.py --spec "$SPEC" --count "$COUNT" --github-output "$GITHUB_OUTPUT"
+
   test:
+    needs: python-versions
     runs-on: ${{ inputs.runs-on }}
     env:
       # `secrets` cannot be tested in a step `if`, so expose only whether it is set.
@@ -64,7 +98,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ${{ fromJson(inputs.python-versions) }}
+        python-version: ${{ fromJson(needs.python-versions.outputs.versions) }}
     steps:
       - uses: actions/checkout@v7
       # Coverage is measured on the last Python in python-versions only; the other
@@ -72,7 +106,7 @@ jobs:
       - name: Pick the coverage leg
         if: ${{ inputs.coverage }}
         env:
-          VERSIONS: ${{ inputs.python-versions }}
+          VERSIONS: ${{ needs.python-versions.outputs.versions }}
           CURRENT: ${{ matrix.python-version }}
         run: |
           last=$(python3 -c 'import json, os; print(json.loads(os.environ["VERSIONS"])[-1])')
